@@ -72,7 +72,7 @@ button:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px; /* Increase spacing between Yes and No */
+    gap: 70px; /* Increase spacing between Yes and No */
     flex-wrap: nowrap; /* Prevent wrapping */
 }
 
