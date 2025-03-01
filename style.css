@@ -79,7 +79,6 @@ button:hover {
 .radio-group label {
     display: flex;
     align-items: center;
-    gap: 8px; /* Space between radio button and text */
 }
 
 .radio-group input {
