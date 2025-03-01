@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chocolate Lovers' Corner 🍫</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>🍫 Welcome to the Chocolate Lovers' Corner 🍫</h1>
+    
+    <h2>Tic-Tac-Toe (Chocolate Edition)</h2>
+    <table class="tic-tac-toe">
+        <tr>
+            <td>🍪</td> <td>🍫</td> <td>🍪</td>
+        </tr>
+        <tr>
+            <td>🍫</td> <td>🍪</td> <td>🍫</td>
+        </tr>
+        <tr>
+            <td>🍪</td> <td>🍫</td> <td>🍪</td>
+        </tr>
+    </table>
+
+    <!-- Chocolate Preferences Form -->
+    <div class="form-container">
+        <h2>🍩 Chocolate Preferences Survey 🍩</h2>
+        <form action="mailto:phttdoll@gmail.com" method="post" enctype="text/plain">
+            <label for="name">Your Sweet Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name"><br>
+
+            <label for="fav-chocolate">Favorite Chocolate Type:</label>
+            <select id="fav-chocolate" name="fav-chocolate">
+                <option value="dark">Dark Chocolate 🍫</option>
+                <option value="milk" selected>Milk Chocolate 🍬</option>
+                <option value="white">White Chocolate 🍰</option>
+                <option value="hazelnut">Hazelnut Chocolate 🌰</option>
+            </select><br>
+
+            <label>Do you love hot chocolate?</label><br>
+            <div class="radio-group">
+                <input type="radio" id="hot-choco-yes" name="hot-choco" value="yes">
+                <label for="hot-choco-yes">Yes, I love it! ☕</label>
+
+                <input type="radio" id="hot-choco-no" name="hot-choco" value="no">
+                <label for="hot-choco-no">No, not really 😅</label>
+            </div>
+
+            <label for="choco-level">How much do you love chocolate? (1-10)</label>
+            <input type="range" id="choco-level" name="choco-level" min="1" max="10" value="5"><br>
+
+            <button type="submit">Submit My Chocolate Love 🍩</button>
+        </form>
+    </div>
+
+    <!-- Chocolate Order Form -->
+    <div class="form-container">
+        <h2>🍪 Order Your Favorite Chocolate 🍪</h2>
+        <form action="mailto:phttdoll@gmail.com" method="post" enctype="text/plain">
+            <label for="order-name">Name for Order:</label>
+            <input type="text" id="order-name" name="order-name" placeholder="Enter your name"><br>
+
+            <label for="order-type">Choose Your Chocolate:</label>
+            <select id="order-type" name="order-type">
+                <option value="brownie">Chocolate Brownie 🍫</option>
+                <option value="cake">Chocolate Cake 🎂</option>
+                <option value="truffles">Chocolate Truffles 🍬</option>
+                <option value="ice-cream">Chocolate Ice Cream 🍦</option>
+            </select><br>
+
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" min="1" max="10"><br>
+
+            <label for="color">Choose Your Chocolate Packaging Color:</label>
+            <input type="color" id="color" name="color"><br>
+
+            <button type="submit">Place My Order 🍫</button>
+        </form>
+    </div>
+
+</body>
+</html>
