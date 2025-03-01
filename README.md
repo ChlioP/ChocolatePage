@@ -31,6 +31,9 @@ Welcome to the **Chocolate Lovers' Corner**! This is a fun and interactive webpa
 ## 📜 License
 This project is for educational purposes. Feel Free to modify and use it!
 
+## 🌍 Live Demo
+https://chliop.github.io/ChocolatePage/
+
 ## 👨‍🎨 Designer
 
 **Chliona Pham** 
