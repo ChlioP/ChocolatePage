@@ -72,10 +72,15 @@ button:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 15px; /* Adds spacing between Yes/No */
+    gap: 5px; /* Reduce space between Yes/No */
     margin: 10px 0;
 }
 
+/* Ensure labels and radio buttons align properly */
+.radio-group label {
+    margin-right: 15px; /* Ensures proper spacing */
+}
+
 .radio-group input {
-    margin-right: 5px;
+    margin: 0 5px 0 0; /* Adjust spacing between radio and label */
 }
