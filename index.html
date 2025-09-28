@@ -6,9 +6,9 @@
 <title>Chocolate Lovers' Corner 🍫 – Tic‑Tac‑Toe</title>
 <!-- Moved styles to style.css as requested -->
 <link rel="stylesheet" href="style.css" />
-  <style>
-.tic-tac-toe { border:4px solid #333 }
-.tic-tac-toe td { width:100px; height:100px; border:2px solid #333 }
+ <style>
+  .tic-tac-toe { border:4px solid #333; border-collapse:collapse; margin:16px auto }
+  .tic-tac-toe td { width:60px; height:60px; border:2px solid #333; text-align:center; font-size:32px; line-height:1; cursor:pointer }
 </style>
 </head>
 <body>
@@ -36,24 +36,45 @@ First move:
 </div>
 
 <table class="tic-tac-toe" role="grid" aria-label="Tic Tac Toe Board">
-<tbody>
-<tr>
-<td role="gridcell" tabindex="0" data-index="0" aria-label="Cell 1"></td>
-<td role="gridcell" tabindex="0" data-index="1" aria-label="Cell 2"></td>
-<td role="gridcell" tabindex="0" data-index="2" aria-label="Cell 3"></td>
-</tr>
-<tr>
-<td role="gridcell" tabindex="0" data-index="3" aria-label="Cell 4"></td>
-<td role="gridcell" tabindex="0" data-index="4" aria-label="Cell 5"></td>
-<td role="gridcell" tabindex="0" data-index="5" aria-label="Cell 6"></td>
-</tr>
-<tr>
-<td role="gridcell" tabindex="0" data-index="6" aria-label="Cell 7"></td>
-<td role="gridcell" tabindex="0" data-index="7" aria-label="Cell 8"></td>
-<td role="gridcell" tabindex="0" data-index="8" aria-label="Cell 9"></td>
-</tr>
-</tbody>
+  <tbody>
+    <tr>
+      <td role="gridcell" tabindex="0" data-index="0"></td>
+      <td role="gridcell" tabindex="0" data-index="1"></td>
+      <td role="gridcell" tabindex="0" data-index="2"></td>
+      <td role="gridcell" tabindex="0" data-index="3"></td>
+      <td role="gridcell" tabindex="0" data-index="4"></td>
+    </tr>
+    <tr>
+      <td role="gridcell" tabindex="0" data-index="5"></td>
+      <td role="gridcell" tabindex="0" data-index="6"></td>
+      <td role="gridcell" tabindex="0" data-index="7"></td>
+      <td role="gridcell" tabindex="0" data-index="8"></td>
+      <td role="gridcell" tabindex="0" data-index="9"></td>
+    </tr>
+    <tr>
+      <td role="gridcell" tabindex="0" data-index="10"></td>
+      <td role="gridcell" tabindex="0" data-index="11"></td>
+      <td role="gridcell" tabindex="0" data-index="12"></td>
+      <td role="gridcell" tabindex="0" data-index="13"></td>
+      <td role="gridcell" tabindex="0" data-index="14"></td>
+    </tr>
+    <tr>
+      <td role="gridcell" tabindex="0" data-index="15"></td>
+      <td role="gridcell" tabindex="0" data-index="16"></td>
+      <td role="gridcell" tabindex="0" data-index="17"></td>
+      <td role="gridcell" tabindex="0" data-index="18"></td>
+      <td role="gridcell" tabindex="0" data-index="19"></td>
+    </tr>
+    <tr>
+      <td role="gridcell" tabindex="0" data-index="20"></td>
+      <td role="gridcell" tabindex="0" data-index="21"></td>
+      <td role="gridcell" tabindex="0" data-index="22"></td>
+      <td role="gridcell" tabindex="0" data-index="23"></td>
+      <td role="gridcell" tabindex="0" data-index="24"></td>
+    </tr>
+  </tbody>
 </table>
+
 
 <div class="legend">🍪 = Cookies · 🍫 = Chocolate</div>
 
@@ -137,131 +158,234 @@ First move:
     const scoreDrawsEl = document.getElementById('scoreDraws');
 
     let scoreYou = 0, scoreBot = 0, scoreDraws = 0;
-    let board, current, gameOver;
 
-    const winLines = [
-      [0,1,2],[3,4,5],[6,7,8],
-      [0,3,6],[1,4,7],[2,5,8],
-      [0,4,8],[2,4,6]
-    ];
+  // --- Config for 5×5 ---
+  const SIZE = 5;
+  const WINLEN = 5;
 
-    function setStatus(msg){ statusEl.textContent = msg; }
-    function winner(b){
-      for (const [a,b2,c] of winLines){
-        if (b[a] && b[a]===b[b2] && b[a]===b[c]) return b[a];
-      }
-      return null;
+  // --- Helpers ---
+  const toRC  = i => [Math.floor(i / SIZE), i % SIZE];
+  const toIdx = (r, c) => r * SIZE + c;
+  const DIRS  = [[0,1],[1,0],[1,1],[1,-1]]; // →, ↓, ↘, ↙
+  const boardFull = b => b.every(Boolean);
+  const setStatus = msg => statusEl.textContent = msg;
+
+  // Win check from the last move only (fast)
+  function isWinFrom(b, lastIdx) {
+    if (lastIdx == null || b[lastIdx] == null) return false;
+    const me = b[lastIdx];
+    const [r0, c0] = toRC(lastIdx);
+    for (const [dr, dc] of DIRS) {
+      let count = 1;
+      // forward
+      let r = r0 + dr, c = c0 + dc;
+      while (r>=0 && r<SIZE && c>=0 && c<SIZE && b[toIdx(r,c)] === me) { count++; r+=dr; c+=dc; }
+      // backward
+      r = r0 - dr; c = c0 - dc;
+      while (r>=0 && r<SIZE && c>=0 && c<SIZE && b[toIdx(r,c)] === me) { count++; r-=dr; c-=dc; }
+      if (count >= WINLEN) return true;
     }
-    function emptyIdx(b){ return b.map((v,i)=>v?null:i).filter(v=>v!==null); }
-    function isDraw(b){ return !winner(b) && emptyIdx(b).length===0; }
+    return false;
+  }
 
-    // Minimax for unbeatable bot (🍫)
-    function minimax(b, player){
-      const w = winner(b);
-      if (w===CHOC) return {score: 10};
-      if (w===COOKIE) return {score: -10};
-      if (isDraw(b)) return {score: 0};
+  // --- Evaluation (bot perspective = CHOC) ---
+  const LINE_SCORE = { 2: 10, 3: 60, 4: 400 };
+  const OPEN_BONUS = 2;
 
-      const moves = [];
-      for (const i of emptyIdx(b)){
-        const move = {index: i};
-        b[i] = player;
-        move.score = (player===CHOC)
-          ? minimax(b, COOKIE).score
-          : minimax(b, CHOC).score;
-        b[i] = null;
-        moves.push(move);
+  function evaluate(b) {
+    function lineScore(mark) {
+      let score = 0;
+      const opp = (mark === CHOC) ? COOKIE : CHOC;
+      for (let r = 0; r < SIZE; r++) {
+        for (let c = 0; c < SIZE; c++) {
+          for (const [dr, dc] of DIRS) {
+            const endR = r + (WINLEN - 1) * dr;
+            const endC = c + (WINLEN - 1) * dc;
+            if (endR < 0 || endR >= SIZE || endC < 0 || endC >= SIZE) continue;
+
+            const cells5 = [];
+            for (let k = 0; k < WINLEN; k++) cells5.push(b[toIdx(r + k*dr, c + k*dc)]);
+            const countMark = cells5.filter(v => v === mark).length;
+            const countOpp  = cells5.filter(v => v === opp ).length;
+
+            if (countMark > 0 && countOpp === 0 && countMark < WINLEN) {
+              // check open ends
+              const beforeR = r - dr, beforeC = c - dc;
+              const afterR  = endR + dr, afterC = endC + dc;
+              const openLeft  = (beforeR>=0 && beforeR<SIZE && beforeC>=0 && beforeC<SIZE && !b[toIdx(beforeR,beforeC)]);
+              const openRight = (afterR>=0 && afterR<SIZE && afterC>=0 && afterC<SIZE && !b[toIdx(afterR,afterC)]);
+              const openEnds = (openLeft?1:0) + (openRight?1:0);
+
+              const base = LINE_SCORE[countMark] || 0;
+              if (base) score += base * (openEnds >= 2 ? OPEN_BONUS : 1);
+            }
+          }
+        }
       }
-      if (player===CHOC){
-        return moves.reduce((best,m)=>m.score>best.score?m:best, {score:-Infinity});
-      } else {
-        return moves.reduce((best,m)=>m.score<best.score?m:best, {score:Infinity});
-      }
+      return score;
     }
+    return lineScore(CHOC) - lineScore(COOKIE);
+  }
 
-    function highlightWin(){
-      for (const [a,b2,c] of winLines){
-        if (board[a] && board[a]===board[b2] && board[a]===board[c]){
-          [a,b2,c].forEach(i=>cells[i].classList.add('winner'));
-          break;
+  // --- Search (alpha–beta, ordered candidates) ---
+  function candidateMoves(b) {
+    const used = new Set(b.map((v,i)=>v?i:null).filter(i=>i!==null));
+    const cand = new Set();
+    const radius = 1;
+
+    if (used.size === 0) {
+      cand.add(Math.floor((SIZE*SIZE)/2)); // center first
+    } else {
+      for (const i of used) {
+        const [r,c] = toRC(i);
+        for (let dr = -radius; dr <= radius; dr++) {
+          for (let dc = -radius; dc <= radius; dc++) {
+            const nr = r+dr, nc = c+dc;
+            if (nr>=0 && nr<SIZE && nc>=0 && nc<SIZE) {
+              const idx = toIdx(nr,nc);
+              if (!b[idx]) cand.add(idx);
+            }
+          }
         }
       }
     }
-    function checkEnd(){
-      const w = winner(board);
-      if (w){
-        gameOver = true;
-        highlightWin();
-        if (w===COOKIE){ scoreYou++; scoreYouEl.textContent = scoreYou; }
-        if (w===CHOC){ scoreBot++; scoreBotEl.textContent = scoreBot; }
-        setStatus(`${w} wins! Tap Reset to play again.`);
-        cells.forEach(c=>c.classList.add('filled'));
-        return true;
-      }
-      if (isDraw(board)){
-        gameOver = true;
-        scoreDraws++; scoreDrawsEl.textContent = scoreDraws;
-        setStatus(`It's a draw! Tap Reset to play again.`);
-        cells.forEach(c=>c.classList.add('filled'));
-        return true;
-      }
-      return false;
-    }
+    if (cand.size === 0) b.forEach((v,i)=>{ if(!v) cand.add(i); });
 
-    function place(i, mark){
-      if (board[i] || gameOver) return false;
-      board[i] = mark;
-      cells[i].textContent = mark;
-      cells[i].classList.add('filled');
+    // move ordering: prefer center-ish
+    const center = [(SIZE-1)/2, (SIZE-1)/2];
+    return [...cand].sort((a,b)=>{
+      const [ra,ca]=toRC(a), [rb,cb]=toRC(b);
+      const da = Math.abs(ra-center[0]) + Math.abs(ca-center[1]);
+      const db = Math.abs(rb-center[0]) + Math.abs(cb-center[1]);
+      return da - db;
+    });
+  }
+
+  function alphabeta(b, depth, alpha, beta, maximizing, lastIdx) {
+    // terminal
+    if (lastIdx != null && isWinFrom(b, lastIdx)) {
+      const who = b[lastIdx];
+      return (who === CHOC) ? 100000 : -100000;
+    }
+    if (depth === 0 || boardFull(b)) return evaluate(b);
+
+    const moves = candidateMoves(b);
+
+    if (maximizing) {
+      let best = -Infinity;
+      for (const i of moves) {
+        b[i] = CHOC;
+        const val = alphabeta(b, depth-1, alpha, beta, false, i);
+        b[i] = null;
+        if (val > best) best = val;
+        if (val > alpha) alpha = val;
+        if (beta <= alpha) break; // prune
+      }
+      return best;
+    } else {
+      let best = Infinity;
+      for (const i of moves) {
+        b[i] = COOKIE;
+        const val = alphabeta(b, depth-1, alpha, beta, true, i);
+        b[i] = null;
+        if (val < best) best = val;
+        if (val < beta) beta = val;
+        if (beta <= alpha) break; // prune
+      }
+      return best;
+    }
+  }
+
+  function bestMove(b) {
+    const MAX_DEPTH = 4; // 4–5 is strong; raise if performance allows
+    let bestScore = -Infinity, bestIdx;
+    for (const i of candidateMoves(b)) {
+      b[i] = CHOC;
+      const val = alphabeta(b, MAX_DEPTH-1, -Infinity, Infinity, false, i);
+      b[i] = null;
+      if (val > bestScore) { bestScore = val; bestIdx = i; }
+    }
+    return bestIdx;
+  }
+
+  // --- Gameplay state & UI wiring ---
+  let board, current, gameOver;
+
+  function place(i, mark){
+    if (board[i] || gameOver) return false;
+    board[i] = mark;
+    cells[i].textContent = mark;
+    cells[i].classList.add('filled');
+    return true;
+  }
+
+  function checkEnd(lastIdx){
+    if (isWinFrom(board, lastIdx)) {
+      gameOver = true;
+      cells.forEach(c => c.classList.add('filled'));
+      const who = board[lastIdx];
+      if (who === COOKIE) { scoreYou++;  scoreYouEl.textContent = scoreYou; }
+      else                { scoreBot++;  scoreBotEl.textContent = scoreBot; }
+      setStatus(`${who} wins! Tap Reset to play again.`);
       return true;
     }
-
-    function playerMove(i){
-      if (!place(i, current)) return;
-      if (checkEnd()) return;
-      current = current===COOKIE ? CHOC : COOKIE;
-      setStatus(`Player ${current} to move`);
-      if (vsBotEl.checked && current===CHOC) setTimeout(botMove, 200);
+    if (boardFull(board)) {
+      gameOver = true;
+      scoreDraws++; scoreDrawsEl.textContent = scoreDraws;
+      setStatus(`It's a draw! Tap Reset to play again.`);
+      cells.forEach(c => c.classList.add('filled'));
+      return true;
     }
+    return false;
+  }
 
-    function botMove(){
-      const best = minimax([...board], CHOC);
-      const i = best.index;
-      if (i!==undefined) place(i, CHOC);
-      if (checkEnd()) return;
-      current = COOKIE;
-      setStatus(`Player ${current} to move`);
+  function playerMove(i){
+    if (!place(i, current)) return;
+    if (checkEnd(i)) return;
+    current = (current === COOKIE) ? CHOC : COOKIE;
+    setStatus(`Player ${current} to move`);
+    if (vsBotEl.checked && current === CHOC) setTimeout(botMove, 120);
+  }
+
+  function botMove(){
+    const move = bestMove(board);
+    if (move !== undefined) {
+      place(move, CHOC);
+      if (checkEnd(move)) return;
     }
+    current = COOKIE;
+    setStatus(`Player ${current} to move`);
+  }
 
-    function resetBoard(){
-      board = Array(9).fill(null);
-      gameOver = false;
-      cells.forEach(c=>{ c.textContent=''; c.classList.remove('filled','winner'); });
-      current = firstSel.value;
-      setStatus(`Player ${current} to move`);
-      if (vsBotEl.checked && current===CHOC) setTimeout(botMove, 200);
-    }
+  function resetBoard(){
+    board = Array(SIZE * SIZE).fill(null);   // ✅ 5×5 board
+    gameOver = false;
+    cells.forEach(c => { c.textContent=''; c.classList.remove('filled','winner'); });
+    current = firstSel.value;                // who goes first
+    setStatus(`Player ${current} to move`);
+    if (vsBotEl.checked && current === CHOC) setTimeout(botMove, 120);
+  }
 
-    cells.forEach(cell=>{
-      cell.addEventListener('click', ()=>{
-        const i = Number(cell.dataset.index);
-        if (!board[i] && !gameOver && current===COOKIE) playerMove(i);
-      });
-      cell.addEventListener('keydown', (e)=>{
-        if ((e.key==='Enter'||e.key===' ') && !gameOver && current===COOKIE){
-          e.preventDefault();
-          const i = Number(cell.dataset.index);
-          if (!board[i]) playerMove(i);
-        }
-      });
+  // Events
+  cells.forEach(cell => {
+    cell.addEventListener('click', () => {
+      const i = Number(cell.dataset.index);
+      if (!board[i] && !gameOver && current === COOKIE) playerMove(i);
     });
+    cell.addEventListener('keydown', (e) => {
+      if ((e.key === 'Enter' || e.key === ' ') && !gameOver && current === COOKIE) {
+        e.preventDefault();
+        const i = Number(cell.dataset.index);
+        if (!board[i]) playerMove(i);
+      }
+    });
+  });
+  resetBtn.addEventListener('click', resetBoard);
+  firstSel.addEventListener('change', resetBoard);
 
-    resetBtn.addEventListener('click', resetBoard);
-    firstSel.addEventListener('change', resetBoard);
-
-    // init
-    resetBoard();
-  })();
+  // Init
+  resetBoard();
+})();
 </script>
 </body>
 </html>
