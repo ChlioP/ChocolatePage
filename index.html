@@ -1,88 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chocolate Lovers' Corner 🍫</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Chocolate Lovers' Corner 🍫 – Tic‑Tac‑Toe</title>
+<!-- Moved styles to style.css as requested -->
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
+<h1>🍫 Welcome to the Chocolate Lovers' Corner 🍫</h1>
+<p class="subtitle">Now featuring an <strong>unbeatable Choco‑Bot</strong>, a scoreboard, and cleaner styles split into <code>style.css</code>.</p>
 
-    <h1>🍫 Welcome to the Chocolate Lovers' Corner 🍫</h1>
-    
-    <h2>Tic-Tac-Toe (Chocolate Edition)</h2>
-    <table class="tic-tac-toe">
-        <tr>
-            <td>🍪</td> <td>🍫</td> <td>🍪</td>
-        </tr>
-        <tr>
-            <td>🍫</td> <td>🍪</td> <td>🍫</td>
-        </tr>
-        <tr>
-            <td>🍪</td> <td>🍫</td> <td>🍪</td>
-        </tr>
-    </table>
+<div class="game-card">
+<h2>Tic‑Tac‑Toe (Chocolate Edition)</h2>
 
-    <!-- Chocolate Preferences Form -->
-    <div class="form-container">
-        <h2>🍩 Chocolate Preferences Survey 🍩</h2>
-        <form action="mailto:phttdoll@gmail.com" method="post" enctype="text/plain">
-            <label for="name">Your Sweet Name:</label>
-            <input type="text" id="name" name="name" placeholder="Enter your name"><br>
+<div class="controls">
+<div id="status" class="status" role="status" aria-live="polite">Player 🍪 to move</div>
+<div class="toolbar">
+<label class="chk">
+<input type="checkbox" id="vsBot" checked /> vs Choco‑Bot (🍫)
+</label>
+<label class="sel">
+First move:
+<select id="firstPlayer">
+<option value="🍪" selected>🍪 (You)</option>
+<option value="🍫">🍫 (Bot)</option>
+</select>
+</label>
+<button id="reset">Reset</button>
+</div>
+</div>
 
-            <label for="fav-chocolate">Favorite Chocolate Type:</label>
-            <select id="fav-chocolate" name="fav-chocolate">
-                <option value="dark">Dark Chocolate 🍫</option>
-                <option value="milk" selected>Milk Chocolate 🍬</option>
-                <option value="white">White Chocolate 🍰</option>
-                <option value="hazelnut">Hazelnut Chocolate 🌰</option>
-            </select><br>
+<table class="tic-tac-toe" role="grid" aria-label="Tic Tac Toe Board">
+<tbody>
+<tr>
+<td role="gridcell" tabindex="0" data-index="0" aria-label="Cell 1"></td>
+<td role="gridcell" tabindex="0" data-index="1" aria-label="Cell 2"></td>
+<td role="gridcell" tabindex="0" data-index="2" aria-label="Cell 3"></td>
+</tr>
+<tr>
+<td role="gridcell" tabindex="0" data-index="3" aria-label="Cell 4"></td>
+<td role="gridcell" tabindex="0" data-index="4" aria-label="Cell 5"></td>
+<td role="gridcell" tabindex="0" data-index="5" aria-label="Cell 6"></td>
+</tr>
+<tr>
+<td role="gridcell" tabindex="0" data-index="6" aria-label="Cell 7"></td>
+<td role="gridcell" tabindex="0" data-index="7" aria-label="Cell 8"></td>
+<td role="gridcell" tabindex="0" data-index="8" aria-label="Cell 9"></td>
+</tr>
+</tbody>
+</table>
 
-            <label>Do you love hot chocolate?</label><br>
-        
-            <div class="radio-group">
-                <label for="hot-choco-yes">
-                    <input type="radio" id="hot-choco-yes" name="hot-choco" value="yes">
-                    Yes, I love it! ☕
-                </label>
-            
-                <label for="hot-choco-no">
-                    <input type="radio" id="hot-choco-no" name="hot-choco" value="no">
-                    No, not really 😅
-                </label>
-            </div><br>
+<div class="legend">🍪 = Cookies · 🍫 = Chocolate</div>
 
-            <label for="choco-level">How much do you love chocolate? (1-10)</label>
-            <input type="range" id="choco-level" name="choco-level" min="1" max="10" value="5"><br>
+<div class="scoreboard" aria-label="Scoreboard">
+<div class="score"><span>🍪 You</span> <strong id="scoreYou">0</strong></div>
+<div class="score"><span>🤝 Draws</span> <strong id="scoreDraws">0</strong></div>
+<div class="score"><span>🍫 Bot</span> <strong id="scoreBot">0</strong></div>
+</div>
+</div>
 
-            <button type="submit">Submit My Chocolate Love 🍩</button>
-        </form>
-    </div>
+<!-- Chocolate Preferences Form -->
+<div class="form-container">
+<h2>🍩 Chocolate Preferences Survey 🍩</h2>
+<form action="mailto:phttdoll@gmail.com" method="post" enctype="text/plain">
+<label for="name">Your Sweet Name:</label>
+<input type="text" id="name" name="name" placeholder="Enter your name"><br>
 
-    <!-- Chocolate Order Form -->
-    <div class="form-container">
-        <h2>🍪 Order Your Favorite Chocolate 🍪</h2>
-        <form action="mailto:phttdoll@gmail.com" method="post" enctype="text/plain">
-            <label for="order-name">Name for Order:</label>
-            <input type="text" id="order-name" name="order-name" placeholder="Enter your name"><br>
-
-            <label for="order-type">Choose Your Chocolate:</label>
-            <select id="order-type" name="order-type">
-                <option value="brownie">Chocolate Brownie 🍫</option>
-                <option value="cake">Chocolate Cake 🎂</option>
-                <option value="truffles">Chocolate Truffles 🍬</option>
-                <option value="ice-cream">Chocolate Ice Cream 🍦</option>
-            </select><br>
-
-            <label for="quantity">Quantity:</label>
-            <input type="number" id="quantity" name="quantity" min="1" max="10"><br>
-
-            <label for="color">Choose Your Chocolate Packaging Color:</label>
-            <input type="color" id="color" name="color"><br>
-
-            <button type="submit">Place My Order 🍫</button>
-        </form>
-    </div>
-
-</body>
-</html>
+</script>
