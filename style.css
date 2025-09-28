@@ -44,9 +44,15 @@ table.tic-tac-toe {
 width: 320px; margin: 16px auto 10px; border-collapse: collapse;
 background-color: var(--milk-choco); border: 5px solid var(--dark-choco); user-select: none;
 }
+
 .tic-tac-toe td {
-width: 100px; height: 100px; border: 2px solid var(--dark-border); text-align: center; font-size: 44px; font-weight: 700; background-color: #5d3a1a; transition: transform 120ms ease, background-color 160ms ease; cursor: pointer;
+  font-family: "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",
+               "Twemoji Mozilla","EmojiOne Color","Android Emoji", sans-serif;
+  font-size: 44px;       
+  line-height: 1;        
+  color: #fff;          
 }
+
 .tic-tac-toe td:focus { outline: 3px solid var(--caramel); outline-offset: -3px; }
 .tic-tac-toe td:hover { transform: scale(1.03); }
 .tic-tac-toe td.filled { cursor: default; }
