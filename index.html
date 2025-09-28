@@ -66,5 +66,198 @@ First move:
 <form action="mailto:phttdoll@gmail.com" method="post" enctype="text/plain">
 <label for="name">Your Sweet Name:</label>
 <input type="text" id="name" name="name" placeholder="Enter your name"><br>
+<label for="fav-chocolate">Favorite Chocolate Type:</label>
+<select id="fav-chocolate" name="fav-chocolate">
+<option value="dark">Dark Chocolate 🍫</option>
+<option value="milk" selected>Milk Chocolate 🍬</option>
+<option value="white">White Chocolate 🍰</option>
+<option value="hazelnut">Hazelnut Chocolate 🌰</option>
+</select><br>
 
+<label>Do you love hot chocolate?</label><br>
+<div class="radio-group">
+<label for="hot-choco-yes">
+<input type="radio" id="hot-choco-yes" name="hot-choco" value="yes"> Yes, I love it! ☕
+</label>
+<label for="hot-choco-no">
+<input type="radio" id="hot-choco-no" name="hot-choco" value="no"> No, not really 😅
+</label>
+</div><br>
+
+<label for="choco-level">How much do you love chocolate? (1-10)</label>
+<input type="range" id="choco-level" name="choco-level" min="1" max="10" value="5"><br>
+
+<button type="submit">Submit My Chocolate Love 🍩</button>
+</form>
+</div>
+
+<!-- Chocolate Order Form -->
+<div class="form-container">
+<h2>🍪 Order Your Favorite Chocolate 🍪</h2>
+<form action="mailto:phttdoll@gmail.com" method="post" enctype="text/plain">
+<label for="order-name">Name for Order:</label>
+<input type="text" id="order-name" name="order-name" placeholder="Enter your name"><br>
+
+<label for="order-type">Choose Your Chocolate:</label>
+<select id="order-type" name="order-type">
+<option value="brownie">Chocolate Brownie 🍫</option>
+<option value="cake">Chocolate Cake 🎂</option>
+<option value="truffles">Chocolate Truffles 🍬</option>
+<option value="ice-cream">Chocolate Ice Cream 🍦</option>
+</select><br>
+
+<label for="quantity">Quantity:</label>
+<input type="number" id="quantity" name="quantity" min="1" max="10"><br>
+
+<label for="color">Choose Your Chocolate Packaging Color:</label>
+<input type="color" id="color" name="color"><br>
+
+<button type="submit">Place My Order 🍫</button>
+</form>
+</div>
+  
+<footer>Designed with 🍫 by Chliona Pham · Educational use only</footer>
+
+<script>
+  (function () {
+    const COOKIE = '🍪';
+    const CHOC = '🍫';
+    const statusEl = document.getElementById('status');
+    const resetBtn = document.getElementById('reset');
+    const vsBotEl = document.getElementById('vsBot');
+    const firstSel = document.getElementById('firstPlayer');
+    const cells = Array.from(document.querySelectorAll('.tic-tac-toe td'));
+
+    const scoreYouEl = document.getElementById('scoreYou');
+    const scoreBotEl = document.getElementById('scoreBot');
+    const scoreDrawsEl = document.getElementById('scoreDraws');
+
+    let scoreYou = 0, scoreBot = 0, scoreDraws = 0;
+    let board, current, gameOver;
+
+    const winLines = [
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
+    ];
+
+    function setStatus(msg){ statusEl.textContent = msg; }
+    function winner(b){
+      for (const [a,b2,c] of winLines){
+        if (b[a] && b[a]===b[b2] && b[a]===b[c]) return b[a];
+      }
+      return null;
+    }
+    function emptyIdx(b){ return b.map((v,i)=>v?null:i).filter(v=>v!==null); }
+    function isDraw(b){ return !winner(b) && emptyIdx(b).length===0; }
+
+    // Minimax for unbeatable bot (🍫)
+    function minimax(b, player){
+      const w = winner(b);
+      if (w===CHOC) return {score: 10};
+      if (w===COOKIE) return {score: -10};
+      if (isDraw(b)) return {score: 0};
+
+      const moves = [];
+      for (const i of emptyIdx(b)){
+        const move = {index: i};
+        b[i] = player;
+        move.score = (player===CHOC)
+          ? minimax(b, COOKIE).score
+          : minimax(b, CHOC).score;
+        b[i] = null;
+        moves.push(move);
+      }
+      if (player===CHOC){
+        return moves.reduce((best,m)=>m.score>best.score?m:best, {score:-Infinity});
+      } else {
+        return moves.reduce((best,m)=>m.score<best.score?m:best, {score:Infinity});
+      }
+    }
+
+    function highlightWin(){
+      for (const [a,b2,c] of winLines){
+        if (board[a] && board[a]===board[b2] && board[a]===board[c]){
+          [a,b2,c].forEach(i=>cells[i].classList.add('winner'));
+          break;
+        }
+      }
+    }
+    function checkEnd(){
+      const w = winner(board);
+      if (w){
+        gameOver = true;
+        highlightWin();
+        if (w===COOKIE){ scoreYou++; scoreYouEl.textContent = scoreYou; }
+        if (w===CHOC){ scoreBot++; scoreBotEl.textContent = scoreBot; }
+        setStatus(`${w} wins! Tap Reset to play again.`);
+        cells.forEach(c=>c.classList.add('filled'));
+        return true;
+      }
+      if (isDraw(board)){
+        gameOver = true;
+        scoreDraws++; scoreDrawsEl.textContent = scoreDraws;
+        setStatus(`It's a draw! Tap Reset to play again.`);
+        cells.forEach(c=>c.classList.add('filled'));
+        return true;
+      }
+      return false;
+    }
+
+    function place(i, mark){
+      if (board[i] || gameOver) return false;
+      board[i] = mark;
+      cells[i].textContent = mark;
+      cells[i].classList.add('filled');
+      return true;
+    }
+
+    function playerMove(i){
+      if (!place(i, current)) return;
+      if (checkEnd()) return;
+      current = current===COOKIE ? CHOC : COOKIE;
+      setStatus(`Player ${current} to move`);
+      if (vsBotEl.checked && current===CHOC) setTimeout(botMove, 200);
+    }
+
+    function botMove(){
+      const best = minimax([...board], CHOC);
+      const i = best.index;
+      if (i!==undefined) place(i, CHOC);
+      if (checkEnd()) return;
+      current = COOKIE;
+      setStatus(`Player ${current} to move`);
+    }
+
+    function resetBoard(){
+      board = Array(9).fill(null);
+      gameOver = false;
+      cells.forEach(c=>{ c.textContent=''; c.classList.remove('filled','winner'); });
+      current = firstSel.value;
+      setStatus(`Player ${current} to move`);
+      if (vsBotEl.checked && current===CHOC) setTimeout(botMove, 200);
+    }
+
+    cells.forEach(cell=>{
+      cell.addEventListener('click', ()=>{
+        const i = Number(cell.dataset.index);
+        if (!board[i] && !gameOver && current===COOKIE) playerMove(i);
+      });
+      cell.addEventListener('keydown', (e)=>{
+        if ((e.key==='Enter'||e.key===' ') && !gameOver && current===COOKIE){
+          e.preventDefault();
+          const i = Number(cell.dataset.index);
+          if (!board[i]) playerMove(i);
+        }
+      });
+    });
+
+    resetBtn.addEventListener('click', resetBoard);
+    firstSel.addEventListener('change', resetBoard);
+
+    // init
+    resetBoard();
+  })();
 </script>
+</body>
+</html>
